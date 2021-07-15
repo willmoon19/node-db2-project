@@ -7,24 +7,30 @@ const {
     checkVinNumberUnique,
   } = require('./cars-middleware');
 
-router.get('/', (req, res, next) => {
-    Cars.getAll()
-        .then(data => {
-            res.status(200).json(data)
-        })
-        .catch(next)
+router.get('/', async (req, res, next) => {
+    try {
+        const cars = await Cars.getAll()
+        res.json(cars)
+    } catch(err) {
+        next(err)
+    }
 });
 
 router.get('/:id', checkCarId, (req, res, next) => {
-    Cars.getById(req.params.id)
-        .then(car => {
-            res.status(200).json(car)
-        })
-        .catch(next)
+    res.json(req.car)
 });
 
-router.post('/', (req, res, next) => {
-    res.json({message: 'router'})
+router.post('/',
+    checkCarPayload,
+    checkVinNumberValid,
+    checkVinNumberUnique,
+    async (req, res, next) => {
+        try {
+            const car = await Cars.create(req.body)
+            res.json(car)
+        } catch(err) {
+            next(err)
+        }
 });  
 
 

@@ -8,14 +8,22 @@ const {
   } = require('./cars-middleware');
 
 router.get('/', (req, res, next) => {
-    res.json({message: 'router'})
+    Cars.getAll()
+        .then(data => {
+            res.status(200).json(data)
+        })
+        .catch(next)
 });
 
-router.get('/', (req, res, next) => {
-    res.json({message: 'router'})
+router.get('/:id', checkCarId, (req, res, next) => {
+    Cars.getById(req.params.id)
+        .then(car => {
+            res.status(200).json(car)
+        })
+        .catch(next)
 });
 
-router.get('/', (req, res, next) => {
+router.post('/', (req, res, next) => {
     res.json({message: 'router'})
 });  
 
